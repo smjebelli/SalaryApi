@@ -10,11 +10,11 @@ namespace SalaryApi.Services
 {
     public interface ISalaryService
     {
-        Task Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType);
-        Task Update(SalaryData salaryData);
-        Task Delete(SalaryData salaryData);
-        Task<SalaryData> Get(long employeeId);
-        Task<IEnumerable<SalaryData>> GetRange(long employeeId);
+        Task<GeneralBaseResponse> Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType);
+        Task<GeneralBaseResponse> Update(SalaryData salaryData);
+        Task<GeneralBaseResponse> Delete(SalaryData salaryData);
+        Task<GeneralBaseResponse<SalaryData>>  Get(long employeeId);
+        Task<GeneralBaseResponse<IEnumerable<SalaryData>>>  GetRange(long employeeId);
     }
     public class SalaryService : ISalaryService
     {
@@ -26,8 +26,10 @@ namespace SalaryApi.Services
             _context = context;
         }
 
-        public async Task Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType)
+        public async Task<GeneralBaseResponse> Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType)
         {
+            var response = new GeneralBaseResponse();
+
             SalaryParserHandler salaryDataParser = null;
 
             switch (salaryDataType)
@@ -47,11 +49,12 @@ namespace SalaryApi.Services
             }
             if (salaryDataParser is null)
             {
-                throw new Exception("salary datatype is not valid");
+                response.Result = NodeResult.InputSalaryFormatNotValid;
+                return response;
             }
 
             var salaryData = salaryDataParser.Parse();
-           // var emp_date = salaryData.Select(x => $"{x.EmployeeId}_{x.Date}").ToList();
+            // var emp_date = salaryData.Select(x => $"{x.EmployeeId}_{x.Date}").ToList();
 
             // check if any of records exists in salarydata
             //if (_context.Salary.Any(x => emp_date.Contains($"{x.EmployeeId}_{x.Date}")))
@@ -81,26 +84,35 @@ namespace SalaryApi.Services
             }
             int res = await _context.SaveChangesAsync();
 
+            if (res > 0)
+            {
+                response.Result = NodeResult.Ok;
+                return response;
+            }
+            else
+            {
+                response.Result = BaseResult.NotContent; 
+                return response;
+            }
 
         }
 
-        public Task Delete(SalaryData salaryData)
+        public Task<GeneralBaseResponse> Update(SalaryData salaryData)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SalaryData> Get(long employeeId)
-        {
-            //var res = _context.Salary.FirstOrDefault(x => x.EmployeeId == employeeId);
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<SalaryData>> GetRange(long employeeId)
+        public Task<GeneralBaseResponse> Delete(SalaryData salaryData)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(SalaryData salaryData)
+        public Task<GeneralBaseResponse<SalaryData>> Get(long employeeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GeneralBaseResponse<IEnumerable<SalaryData>>> GetRange(long employeeId)
         {
             throw new NotImplementedException();
         }
