@@ -1,4 +1,4 @@
-﻿namespace SalaryApi.DTO
+﻿namespace SalaryApi.DTO.Service
 {
     public class SalaryData
     {
@@ -9,5 +9,8 @@
         public long Allowance { get; set; }
         public long Transportation { get; set; }
         public string? Date { get; set; }
+
+        public long ComputeSalary(long overtimeAmount, long tax) =>  BasicSalary + Allowance + Transportation + overtimeAmount - tax;
+        
     }
 }
