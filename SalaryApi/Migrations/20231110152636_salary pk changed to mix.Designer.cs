@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SalaryApi.Models;
 
@@ -10,9 +11,11 @@ using SalaryApi.Models;
 namespace SalaryApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231110152636_salary pk changed to mix")]
+    partial class salarypkchangedtomix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,8 +51,6 @@ namespace SalaryApi.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("EmployeeId", "Date");
-
-                    b.HasIndex("EmployeeId", "Date");
 
                     b.ToTable("Salary");
 

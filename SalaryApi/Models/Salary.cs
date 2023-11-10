@@ -2,7 +2,6 @@
 {
     public class Salary
     {
-        public Guid Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public long EmployeeId { get; set; }

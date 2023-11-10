@@ -13,17 +13,21 @@ namespace SalaryApi.Services
         Task<GeneralBaseResponse> Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType);
         Task<GeneralBaseResponse> Update(SalaryData salaryData);
         Task<GeneralBaseResponse> Delete(SalaryData salaryData);
-        Task<GeneralBaseResponse<SalaryData>>  Get(long employeeId);
-        Task<GeneralBaseResponse<IEnumerable<SalaryData>>>  GetRange(long employeeId);
+        Task<GeneralBaseResponse<SalaryData>> Get(long employeeId);
+        Task<GeneralBaseResponse<IEnumerable<SalaryData>>> GetRange(long employeeId);
     }
     public class SalaryService : ISalaryService
     {
         private AppDbContext _context;
+        private readonly ILogger<SalaryService> _logger;
+
         public const long tax = 1000;
 
-        public SalaryService(AppDbContext context)
+
+        public SalaryService(AppDbContext context, ILogger<SalaryService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<GeneralBaseResponse> Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType)
@@ -35,7 +39,7 @@ namespace SalaryApi.Services
             switch (salaryDataType)
             {
                 case SalaryDataType.JSON:
-                    // salaryDataParser = new SalaryDataParser(salaryRawInput.Data, new JsonSalaryParser(salaryRawInput.Data));
+
                     break;
                 case SalaryDataType.XML:
                     break;
@@ -54,17 +58,23 @@ namespace SalaryApi.Services
             }
 
             var salaryData = salaryDataParser.Parse();
-            // var emp_date = salaryData.Select(x => $"{x.EmployeeId}_{x.Date}").ToList();
 
-            // check if any of records exists in salarydata
-            //if (_context.Salary.Any(x => emp_date.Contains($"{x.EmployeeId}_{x.Date}")))
-            //{
-            //    throw new Exception("some data already exists");
-            //}
+            var emp_date = salaryData.Select(x => $"{x.EmployeeId}_{x.Date}").ToList();
 
+            // check if any of records exists in salarydata            
+            string records = "'" + string.Join("','", emp_date) + "'";
+
+            string query = $"select * from Salary where Cast(EmployeeId as varchar)+'_'+[Date] in ({records})";
+
+            var dups = _context.Salary.FromSqlRaw(query).ToList();
 
             foreach (var item in salaryData)
-            {
+            {                
+                if (dups.Any(x => (x.EmployeeId + "_" + x.Date) == (item.EmployeeId + "_" + item.Date) ))
+                {
+                   _logger.LogWarning($"salary insert ignored - {item.EmployeeId}_{item.Date} already exists in database");
+                    continue;
+                }
                 long overtimeAmount = new CalculatorCreator(salaryRawInput.OverTimeCaluculator, item.BasicSalary, item.Allowance)
                         .CreateCalculator()
                         .Calculate();
@@ -91,7 +101,7 @@ namespace SalaryApi.Services
             }
             else
             {
-                response.Result = BaseResult.NotContent; 
+                response.Result = BaseResult.NotContent;
                 return response;
             }
 
