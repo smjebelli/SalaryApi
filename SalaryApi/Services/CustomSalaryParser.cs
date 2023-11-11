@@ -9,14 +9,14 @@ namespace SalaryApi.Services
     public class CustomSalaryParser : ISalaryDataParser
     {
         protected string _data;
-        protected char _delimiter = '/';
+        private char _delimiter = '/';
 
         public CustomSalaryParser(string data)
         {
             _data = data;
         }
 
-        public List<SalaryData> Parse()
+        public virtual List<SalaryData> Parse()
         {
             List<SalaryData> salaries = new List<SalaryData>();
 
@@ -52,7 +52,7 @@ namespace SalaryApi.Services
             return salaries;
         }
 
-        protected bool IsFirstLineValidFormat(string firstLine, char delimiter)
+        private bool IsFirstLineValidFormat(string firstLine, char delimiter)
         {
             if (firstLine.Contains(delimiter))
             {

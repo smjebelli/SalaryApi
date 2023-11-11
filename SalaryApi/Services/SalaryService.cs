@@ -55,6 +55,7 @@ namespace SalaryApi.Services
 
                     break;
                 case SalaryDataType.CSV:
+                    salaryDataParser = new SalaryParserHandler(new CsvSalaryParser(salaryRawInput.Data));
                     break;
                 case SalaryDataType.CUSTOM:
                     salaryDataParser = new SalaryParserHandler(new CustomSalaryParser(salaryRawInput.Data));
@@ -75,7 +76,7 @@ namespace SalaryApi.Services
             // check if any of records exists in salarydata            
             string records = "'" + string.Join("','", emp_date) + "'";
 
-            string query = $"select * from Salary where Cast(EmployeeId as varchar)+'_'+[Date] in ({records})";
+            string query = $"select * from Salary where Cast([{nameof(SalaryData.EmployeeId)}] as varchar)+'_'+[{nameof(SalaryData.Date)}] in ({records})";
 
             var dups = _context.Salary.FromSqlRaw(query).ToList();
 
