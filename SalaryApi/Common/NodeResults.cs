@@ -13,6 +13,7 @@ namespace SalaryApi.Common
         }
 
         public static NodeResult InputSalaryFormatNotValid => new NodeResult(false, "فرمت فایل ورودی معتبر نیست", "1001", HttpStatusCode.BadRequest);
+        public static NodeResult NoRecordsAffected => new NodeResult(false, "هیچ رکوردی درج نشد", "1002", HttpStatusCode.BadRequest);
         
     }
 }

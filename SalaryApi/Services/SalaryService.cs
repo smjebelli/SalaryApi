@@ -40,29 +40,10 @@ namespace SalaryApi.Services
 
         public async Task<GeneralBaseResponse> Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType)
         {
-            var response = new GeneralBaseResponse();           
+            var response = new GeneralBaseResponse();
 
-            SalaryParserHandler salaryDataParser = null;
+            var salaryDataParser = HandleSalaryParser( salaryDataType,salaryRawInput.Data);
 
-            switch (salaryDataType)
-            {
-                case SalaryDataType.JSON:
-                    salaryDataParser = new SalaryParserHandler(new JsonSalaryParser(salaryRawInput.Data));
-
-                    break;
-                case SalaryDataType.XML:
-                    salaryDataParser = new SalaryParserHandler(new XmlSalaryParser(salaryRawInput.Data));
-
-                    break;
-                case SalaryDataType.CSV:
-                    salaryDataParser = new SalaryParserHandler(new CsvSalaryParser(salaryRawInput.Data));
-                    break;
-                case SalaryDataType.CUSTOM:
-                    salaryDataParser = new SalaryParserHandler(new CustomSalaryParser(salaryRawInput.Data));
-                    break;
-                default:
-                    break;
-            }
             if (salaryDataParser is null)
             {
                 response.Result = NodeResult.InputSalaryFormatNotValid;
@@ -113,10 +94,36 @@ namespace SalaryApi.Services
             }
             else
             {
-                response.Result = BaseResult.NotContent;
+                response.Result = NodeResult.NoRecordsAffected;
                 return response;
             }
 
+        }
+
+        private SalaryParserHandler HandleSalaryParser(SalaryDataType salaryDataType ,string data)
+        {
+            SalaryParserHandler salaryDataParser = null;
+            switch (salaryDataType)
+            {
+                case SalaryDataType.JSON:
+                    salaryDataParser = new SalaryParserHandler(new JsonSalaryParser(data));
+
+                    break;
+                case SalaryDataType.XML:
+                    salaryDataParser = new SalaryParserHandler(new XmlSalaryParser(data));
+
+                    break;
+                case SalaryDataType.CSV:
+                    salaryDataParser = new SalaryParserHandler(new CsvSalaryParser(data));
+                    break;
+                case SalaryDataType.CUSTOM:
+                    salaryDataParser = new SalaryParserHandler(new CustomSalaryParser(data));
+                    break;
+                default:                    
+                    break;
+            }
+
+            return salaryDataParser;
         }
 
         public Task<GeneralBaseResponse> Update(SalaryData salaryData)

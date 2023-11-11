@@ -10,7 +10,7 @@ namespace SalaryApi.Common
         protected IConfiguration _configuration;
         protected readonly IHttpContextAccessor _accessor;
 
-        public ApiControllerBase(IConfiguration configuration, IHttpContextAccessor accessor, ILogger<ApiControllerBase> logger)
+        public ApiControllerBase(IConfiguration configuration, IHttpContextAccessor accessor)
         {
             this._accessor = accessor;
             _configuration = configuration;           
