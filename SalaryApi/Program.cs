@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
+using SalaryApi.Configurations;
 using SalaryApi.Models;
 using SalaryApi.StartupExtensions;
 using Serilog;
@@ -18,8 +20,11 @@ builder.Logging.AddSerilog(logger);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<SalaryConfiguration>(
+        builder.Configuration.GetSection("Salary")
+    );
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<AppDbContext>(o =>

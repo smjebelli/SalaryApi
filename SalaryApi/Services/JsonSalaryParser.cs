@@ -13,9 +13,8 @@ namespace SalaryApi.Services
         }
         public List<SalaryData> Parse()
         {
-            //var salaryData = JsonSerializer.Deserialize<SalaryData>(data);
-            //return salaryData;
-            throw new NotImplementedException();
+            var salaryData = JsonSerializer.Deserialize<List<SalaryData>>(_data);
+            return salaryData;            
         }
 
         

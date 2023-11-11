@@ -5,13 +5,14 @@ using Microsoft.Data.SqlClient;
 
 namespace SalaryApi.Configurations
 {
-    public class SalaryCofigurations : IEntityTypeConfiguration<Salary>
+    public class SalaryEntityCofigurations : IEntityTypeConfiguration<Salary>
     {
         public void Configure(EntityTypeBuilder<Salary> builder)
         {
             builder.HasKey(x => new {x.EmployeeId, x.Date});
             builder.Property(x => x.EmployeeId).IsRequired();
-            builder.HasIndex(x => new { x.EmployeeId, x.Date });
+            builder.HasIndex(x => new { x.EmployeeId, x.Date })
+                .IsUnique();
 
             builder.HasData(new Salary()
             {

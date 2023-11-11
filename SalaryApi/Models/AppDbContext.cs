@@ -15,7 +15,7 @@ namespace SalaryApi.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new SalaryCofigurations());
+            modelBuilder.ApplyConfiguration(new SalaryEntityCofigurations());
         }
     }
 }

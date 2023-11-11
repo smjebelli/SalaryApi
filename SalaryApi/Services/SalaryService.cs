@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OvetimePolicies;
 using SalaryApi.Common;
+using SalaryApi.Configurations;
 using SalaryApi.DTO.API;
 using SalaryApi.DTO.Service;
 using SalaryApi.Models;
@@ -20,14 +21,21 @@ namespace SalaryApi.Services
     {
         private AppDbContext _context;
         private readonly ILogger<SalaryService> _logger;
+        private IConfiguration _configuration;
 
-        public const long tax = 1000;
+        private long tax = 0;
 
-
-        public SalaryService(AppDbContext context, ILogger<SalaryService> logger)
+        public SalaryService(AppDbContext context, ILogger<SalaryService> logger, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
+            _configuration = configuration;
+            var salaryConf = configuration.GetSection("Salary").Get<SalaryConfiguration>();
+            if (salaryConf != null)
+                tax = salaryConf.Tax;
+            else
+                tax = 800;
+
         }
 
         public async Task<GeneralBaseResponse> Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType)
@@ -39,9 +47,12 @@ namespace SalaryApi.Services
             switch (salaryDataType)
             {
                 case SalaryDataType.JSON:
+                    salaryDataParser = new SalaryParserHandler(new JsonSalaryParser(salaryRawInput.Data));
 
                     break;
                 case SalaryDataType.XML:
+                    salaryDataParser = new SalaryParserHandler(new XmlSalaryParser(salaryRawInput.Data));
+
                     break;
                 case SalaryDataType.CSV:
                     break;
@@ -69,10 +80,10 @@ namespace SalaryApi.Services
             var dups = _context.Salary.FromSqlRaw(query).ToList();
 
             foreach (var item in salaryData)
-            {                
-                if (dups.Any(x => (x.EmployeeId + "_" + x.Date) == (item.EmployeeId + "_" + item.Date) ))
+            {
+                if (dups.Any(x => (x.EmployeeId + "_" + x.Date) == (item.EmployeeId + "_" + item.Date)))
                 {
-                   _logger.LogWarning($"salary insert ignored - {item.EmployeeId}_{item.Date} already exists in database");
+                    _logger.LogWarning($"salary insert ignored - {item.EmployeeId}_{item.Date} already exists in database");
                     continue;
                 }
                 long overtimeAmount = new CalculatorCreator(salaryRawInput.OverTimeCaluculator, item.BasicSalary, item.Allowance)
