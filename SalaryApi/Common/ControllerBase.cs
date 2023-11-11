@@ -4,18 +4,19 @@ using System.Net;
 namespace SalaryApi.Common
 {
     [ApiController]
+    [ExceptionActionFilter]
     public class ApiControllerBase : ControllerBase
     {
         protected IConfiguration _configuration;
         protected readonly IHttpContextAccessor _accessor;
 
-        public ApiControllerBase(IConfiguration configuration, IHttpContextAccessor accessor)
+        public ApiControllerBase(IConfiguration configuration, IHttpContextAccessor accessor, ILogger<ApiControllerBase> logger)
         {
             this._accessor = accessor;
-            _configuration = configuration;
+            _configuration = configuration;           
         }
 
-       
+
 
 
         protected ObjectResult StatusCode(HttpStatusCode statusCode, object value) =>

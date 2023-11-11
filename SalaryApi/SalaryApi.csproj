@@ -32,4 +32,8 @@
     <ProjectReference Include="..\OvetimePolicies\OvetimePolicies.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="StartupExtensions\" />
+  </ItemGroup>
+
 </Project>

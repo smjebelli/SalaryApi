@@ -40,7 +40,7 @@ namespace SalaryApi.Services
 
         public async Task<GeneralBaseResponse> Add(AddSalaryServiceData salaryRawInput, SalaryDataType salaryDataType)
         {
-            var response = new GeneralBaseResponse();
+            var response = new GeneralBaseResponse();           
 
             SalaryParserHandler salaryDataParser = null;
 
