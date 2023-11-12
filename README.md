@@ -157,3 +157,23 @@ curl --location 'http://localhost:5204/csv/Salary/Add' \
 - Failure: `400 Bad Request` with error message
 
 ###
+
+### 4. GetRange of Salary Record
+
+- **Method:** `GetRange`
+
+- **Endpoint:** `/Salary/Get`
+
+- **Request Body:**
+- `EmployeeId (Query parameter)`
+
+- **Response:**
+
+- Success: `200 OK` with relevant data
+- Failure: `400 Bad Request` with error message
+
+## License
+
+This project is licensed under the [MIT License](https://chat.openai.com/c/LICENSE).
+
+e.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
