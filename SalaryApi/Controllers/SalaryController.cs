@@ -145,7 +145,7 @@ namespace SalaryApi.Controllers
         /// <returns></returns>
         [Route("[controller]/[action]")]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] GetSalaryRequest salaryRequest)
+        public async Task<IActionResult> Delete([FromBody] GetSalaryRequest salaryRequest)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
