@@ -174,6 +174,4 @@ curl --location 'http://localhost:5204/csv/Salary/Add' \
 
 ## License
 
-This project is licensed under the [MIT License](https://chat.openai.com/c/LICENSE).
-
-e.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
+This project is licensed under the [MIT License]
