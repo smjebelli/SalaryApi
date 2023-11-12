@@ -175,3 +175,7 @@ curl --location 'http://localhost:5204/csv/Salary/Add' \
 ## License
 
 This project is licensed under the [MIT License]
+
+### UML Diagram
+
+<img src='./Assets/Images/UML.jpg' width=80%>
